@@ -1,10 +1,15 @@
+import axios from 'axios';
 import { useState, useCallback } from 'react';
 import { useRouter } from 'next/router';
 import {FaGoogle, FaGithub} from 'react-icons/fa';
 
-import Input from '@/components/input'
+import Input from '@/components/Input';
+import { signIn } from 'next-auth/react';
 
-export default function auth() {
+
+export default function Auth() {
+
+    const register = useRouter();
 
     const [name, setName] = useState('');
     const [email, setEmail] = useState('');
@@ -18,22 +23,39 @@ export default function auth() {
         setVariant((currentVariant) => currentVariant === 'login' ? 'register' : 'login');
     }, []);
 
-    const login = useCallback(async() => {
+    
+    const handleLogin = useCallback(async() => {
         try {
+            await signIn('credentials', {
+                email,
+                password,
+                redirect: false,
+                callbackUrl: '/'
+            });
+
+            router.push('/');
 
         } catch(error) {
-
+            console.log("login error -> ", error);
         }
-    }, [])
+    }, [email, password, router]);
 
-    const register = useCallback(async() => {
+
+    const handleRegister = useCallback(async () => {        
         try {
+            await axios.post('/api/register', {
+                email,
+                name,
+                password
+            });
 
-        } catch(error) {
-
+            handleLogin();
+            
+        } catch (error) {
+            console.log("register error -> ", error);
+            
         }
-    }, [])
-
+    }, [email, name, password, handleLogin]);
 
   return (
     <div className="relative h-full w-full bg-[url('/images/hero.jpg')] bg-no-repeat bg-center bg-cover">
@@ -57,7 +79,9 @@ export default function auth() {
                         <Input id='password' value={password} label='Password' onChange={(e:any) => setPassword(e.target.value)} type='password'/>
                     </div>
 
-                    <button className='bg-red-700 py-3 text-white hover:bg-red-800 transition rounded-md w-full mt-10'>
+                    <button 
+                        className='bg-red-700 py-3 text-white hover:bg-red-800 transition rounded-md w-full mt-10'
+                        onClick= {variant === 'login' ? handleLogin : handleRegister} >
                         {variant === 'login' ? 'Sign In' : 'Get Started'}
                     </button>
 
