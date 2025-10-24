@@ -1,7 +1,8 @@
 import axios from 'axios';
 import { useState, useCallback } from 'react';
 import { useRouter } from 'next/router';
-import {FaGoogle, FaGithub} from 'react-icons/fa';
+import {FcGoogle} from 'react-icons/fc';
+import {FaGithub} from 'react-icons/fa';
 
 import Input from '@/components/Input';
 import { signIn } from 'next-auth/react';
@@ -85,12 +86,14 @@ export default function Auth() {
                         {variant === 'login' ? 'Sign In' : 'Get Started'}
                     </button>
 
-                    <div className='flex flex-row items-center gap-4 mt-10 justify-center'>
-                        <div className='bg-white flex text-red-700 w-12 h-12 rounded-full items-center cursor-pointer justify-center'>
-                            <FaGoogle size={30}/>
+                    <div className='flex flex-row items-center gap-4 mt-8 justify-center'>
+                        <div className='bg-white w-10 h-10 rounded-full flex items-center justify-center cursor-pointer hover:opacity-80 transition'
+                            onClick={() => signIn('google', {callbackUrl: '/'})}>
+                            <FcGoogle size={30}/>
                         </div>
 
-                        <div className='bg-white flex text-black w-12 h-12 rounded-full items-center cursor-pointer justify-center'>
+                        <div className='bg-white w-10 h-10 rounded-full flex items-center justify-center cursor-pointer hover:opacity-80 transition'
+                            onClick={() => signIn('github', {callbackUrl: '/'})}>
                             <FaGithub size={30}/>
                         </div>
                     </div>
