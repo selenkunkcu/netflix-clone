@@ -1,16 +1,34 @@
 import axios from 'axios';
 import { useState, useCallback } from 'react';
 import { useRouter } from 'next/router';
+import { NextPageContext } from 'next';
+import { signIn, getSession } from 'next-auth/react';
 import {FcGoogle} from 'react-icons/fc';
 import {FaGithub} from 'react-icons/fa';
 
 import Input from '@/components/Input';
-import { signIn } from 'next-auth/react';
+
+export async function getServerSideProps(context: NextPageContext) {
+
+  const session = await getSession(context);
+
+  if(session){
+    return{
+      redirect:{
+        destination:'/',
+        permanent : false,
+      }
+    }
+  }
+
+  return{
+    props: {}
+  }
+  
+}
 
 
 export default function Auth() {
-
-    const register = useRouter();
 
     const [name, setName] = useState('');
     const [email, setEmail] = useState('');
@@ -25,16 +43,16 @@ export default function Auth() {
     }, []);
 
     
-    const handleLogin = useCallback(async() => {
+    const login = useCallback(async() => {
         try {
             await signIn('credentials', {
                 email,
                 password,
                 redirect: false,
-                callbackUrl: '/'
+                callbackUrl: '/profiles'
             });
 
-            router.push('/');
+            router.push('/profiles');
 
         } catch(error) {
             console.log("login error -> ", error);
@@ -42,7 +60,7 @@ export default function Auth() {
     }, [email, password, router]);
 
 
-    const handleRegister = useCallback(async () => {        
+    const register = useCallback(async () => {        
         try {
             await axios.post('/api/register', {
                 email,
@@ -50,13 +68,13 @@ export default function Auth() {
                 password
             });
 
-            handleLogin();
+            login();
             
         } catch (error) {
             console.log("register error -> ", error);
             
         }
-    }, [email, name, password, handleLogin]);
+    }, [email, name, password, login]);
 
   return (
     <div className="relative h-full w-full bg-[url('/images/hero.jpg')] bg-no-repeat bg-center bg-cover">
@@ -82,18 +100,18 @@ export default function Auth() {
 
                     <button 
                         className='bg-red-700 py-3 text-white hover:bg-red-800 transition rounded-md w-full mt-10'
-                        onClick= {variant === 'login' ? handleLogin : handleRegister} >
+                        onClick= {variant === 'login' ? login : register} >
                         {variant === 'login' ? 'Sign In' : 'Get Started'}
                     </button>
 
                     <div className='flex flex-row items-center gap-4 mt-8 justify-center'>
                         <div className='bg-white w-10 h-10 rounded-full flex items-center justify-center cursor-pointer hover:opacity-80 transition'
-                            onClick={() => signIn('google', {callbackUrl: '/'})}>
+                            onClick={() => signIn('google', {callbackUrl: '/profiles'})}>
                             <FcGoogle size={30}/>
                         </div>
 
                         <div className='bg-white w-10 h-10 rounded-full flex items-center justify-center cursor-pointer hover:opacity-80 transition'
-                            onClick={() => signIn('github', {callbackUrl: '/'})}>
+                            onClick={() => signIn('github', {callbackUrl: '/profiles'})}>
                             <FaGithub size={30}/>
                         </div>
                     </div>
