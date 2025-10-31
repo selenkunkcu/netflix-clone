@@ -6,8 +6,6 @@ import { authOptions } from "@/pages/api/auth/[...nextauth]";
 
 const serverAuth = async (req: NextApiRequest, res: NextApiResponse) => {
     const session = await getServerSession(req, res, authOptions);
-
-    console.log("session.user", session?.user);
     
     if (!session?.user?.email) {
         throw new Error('Not signed in.')
@@ -17,10 +15,7 @@ const serverAuth = async (req: NextApiRequest, res: NextApiResponse) => {
         where: {
             email: session.user.email,
         }
-    });
-
-    console.log("serverAuth currentUser-- ", currentUser);
-    
+    });    
 
     if (!currentUser) {
         throw new Error('Not signed in.');
