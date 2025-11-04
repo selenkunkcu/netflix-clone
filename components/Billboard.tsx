@@ -27,14 +27,14 @@ const Billboard = () => {
                 <p className='text-white text-1xl md:text-5xl h-full w-[50%] lg:text-6xl font-bold drop-shadow-xl'>
                     {data?.title}
                 </p>
-                <p className='text-white text-[8px] md:text-lg mt-3 md:mt-8 w-[90%] md:w-[80%] lg:w-[50%] drop-shadow-xl'>
+                <p className='text-white text-[8px] lg:text-xl mt-3 md:mt-8 w-[90%] md:w-[80%] lg:w-[50%] drop-shadow-xl'>
                     {data?.description}
                 </p>
                 <div className='flex flex-row items-center mt-3 md:mt-4 gap-3'>
                     <PlayButton movieId={data?.id} />
                     <button onClick={handleOpenModal} className='bg-white text-white bg-opacity-30 rounded-md py-1 px-3 md:px-7 w-auto h-6 md:h-10 lg:h-14 text-xs lg:text-2xl font-semibold flex flex-row items-center hover:bg-opacity-20 transition'>
                         <AiOutlineInfoCircle className="w-4 h-4 md:w-9 md:h-9 mr-1 md:mr-3"/>    
-                        <p className='leading-[2.4rem]'> More Info</p>
+                        <p className='leading-[2.4rem]'> More Info </p>
                     </button>
                 </div>
             </div>
